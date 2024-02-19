@@ -1,0 +1,67 @@
+mvn test
+mvn test -Denv=prod
+mvn test -Denv=prod -Dcucumber.filter.tags="@RbaUITest"
+mvn test -Denv=prod -Dcucumber.filter.tags="@RbaAPITest"
+mvn test -Denv=prod -Dcucumber.filter.tags="@RbaUITest or @RbaAPITest"
+mvn test -Denv=uat
+mvn test -Denv=uat -Dcucumber.filter.tags="@RbaAPITest"
+
+
+RunCucumberTest
+
+
+feature
+
+
+java/com.alfred
+	common
+	  -Hooks.java
+	    - @Before/@After
+	      - setUp/tearDown: read properties file, quit driver
+	    - @AfterStep
+	      - addScreenshot: add screenshot for all steps
+	      - addScreenshotForFailed: add screenshot only for failed steps
+
+	  -BasePage.java
+	    - common page functions
+	      - hightlightElement
+	      - isElementVisible(WebDriverWait.until(ExpectedConditions.visibilityOf(element)))
+	    
+	pageobject: (Page Object Model, PageFactory)
+	  - HomePage
+	  - PaymentsAndInfrastructurePage
+	  - PaymentsSystemPage
+	  
+	stepdefinitions
+	  - RbaAPITestSteps
+	  - RbaUITestSteps
+	    - last step, use fail() to simulate test step failure and check extentreport
+	    
+	utils
+	  - ConfigFileReader
+	  
+	RunCucumberTest
+	  - Test runner to run all tests
+	  
+resources
+	drivers
+	environments
+	  - api
+	    - prod.properties
+	    - uat.properties
+	  - web
+	    - prod.properties
+	    - uat.properties
+	features
+	  - RbaAPITest.feature
+	  - RbaUITest.feature
+	application.properties
+	extent.properties
+
+azure-pipelines.yml
+
+pom.xml
+
+
+
+	
